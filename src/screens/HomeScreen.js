@@ -3,36 +3,74 @@
  * Main landing screen with primary actions
  */
 
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { IoBook, IoCamera, IoTrophy, IoTime, IoStar, IoFlame, IoBulb, IoToday } from 'react-icons/io5';
-import { getTimeBasedGreeting } from '../utils/helpers';
-import { DatabaseService, AuthService } from '../services/firebase';
-import './HomeScreen.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  IoBook,
+  IoCamera,
+  IoTrophy,
+  IoTime,
+  IoStar,
+  IoFlame,
+  IoBulb,
+  IoToday,
+} from "react-icons/io5";
+
+import { getTimeBasedGreeting } from "../utils/helpers";
+import { DatabaseService, AuthService } from "../services/firebase";
+import "./HomeScreen.css";
 
 const HomeScreen = () => {
   const navigate = useNavigate();
-  const [userName, setUserName] = useState('User');
+
+  const [userName, setUserName] = useState("User");
   const [streak, setStreak] = useState(0);
   const [todayProgress, setTodayProgress] = useState(0);
 
-  useEffect(() => {
-    loadUserData();
-  }, []);
-
-  const loadUserData = async () => {
+  /* 📚 Fetch lessons from backend */
+  const fetchLessons = async () => {
     try {
       const user = AuthService.getCurrentUser();
+      if (!user) return;
+
+      const token = await user.getIdToken();
+
+      const res = await fetch("http://localhost:5001/lessons", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+      console.log("📚 LESSONS FROM BACKEND:", data);
+    } catch (error) {
+      console.error("❌ Error fetching lessons:", error);
+    }
+  };
+
+  /* 🔄 Load user data + lessons after login */
+  useEffect(() => {
+    const unsubscribe = AuthService.onAuthChange(async (user) => {
       if (user) {
-        const userData = await DatabaseService.getUserData(user.userId || user.uid);
-        if (userData.success) {
-          setUserName(userData.data.displayName || 'User');
-          setStreak(userData.data.progress?.streak || 0);
-          setTodayProgress(userData.data.progress?.todayProgress || 0);
-        }
+        await loadUserData(user);
+        await fetchLessons();
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  /* 👤 Load user data from Firestore */
+  const loadUserData = async (user) => {
+    try {
+      const userData = await DatabaseService.getUserData(user.uid);
+      if (userData.success) {
+        setUserName(userData.data.displayName || "User");
+        setStreak(userData.data.progress?.streak || 0);
+        setTodayProgress(userData.data.progress?.todayProgress || 0);
       }
     } catch (error) {
-      console.error('Error loading user data:', error);
+      console.error("Error loading user data:", error);
     }
   };
 
@@ -44,6 +82,7 @@ const HomeScreen = () => {
           <div className="greeting">{getTimeBasedGreeting()},</div>
           <div className="user-name">{userName}! 👋</div>
         </div>
+
         {streak > 0 && (
           <div className="streak-badge">
             <IoFlame size={20} color="#FFA500" />
@@ -58,25 +97,27 @@ const HomeScreen = () => {
           <IoToday size={24} color="#4A90E2" />
           <span className="progress-title">Today's Progress</span>
         </div>
+
         <div className="progress-bar-container">
           <div className="progress-bar-background">
-            <div 
+            <div
               className="progress-bar-fill"
               style={{ width: `${Math.min(todayProgress, 100)}%` }}
             />
           </div>
           <span className="progress-text">{todayProgress}%</span>
         </div>
+
         <div className="progress-subtext">
           {todayProgress >= 100
             ? "Great job! You've completed today's goal! 🎉"
-            : 'Keep going! Complete more lessons to reach your daily goal.'}
+            : "Keep going! Complete more lessons to reach your daily goal."}
         </div>
       </div>
 
       {/* Action Cards */}
       <div className="action-cards-container">
-        <div className="action-card primary-card" onClick={() => navigate('/learn')}>
+        <div className="action-card primary-card" onClick={() => navigate("/learn")}>
           <div className="card-gradient">
             <div className="card-icon-container">
               <IoBook size={48} color="#fff" />
@@ -89,7 +130,7 @@ const HomeScreen = () => {
           </div>
         </div>
 
-        <div className="action-card secondary-card" onClick={() => navigate('/camera')}>
+        <div className="action-card secondary-card" onClick={() => navigate("/camera")}>
           <div className="card-gradient">
             <div className="card-icon-container">
               <IoCamera size={48} color="#fff" />
@@ -103,7 +144,7 @@ const HomeScreen = () => {
         </div>
       </div>
 
-      {/* Stats Grid */}
+      {/* Stats */}
       <div className="stats-section">
         <h3 className="section-title">Your Stats</h3>
         <div className="stats-grid">
@@ -112,11 +153,13 @@ const HomeScreen = () => {
             <div className="stat-value">0</div>
             <div className="stat-label">Lessons Completed</div>
           </div>
+
           <div className="stat-card">
             <IoTime size={32} color="#4A90E2" />
             <div className="stat-value">0m</div>
             <div className="stat-label">Total Practice Time</div>
           </div>
+
           <div className="stat-card">
             <IoStar size={32} color="#50C878" />
             <div className="stat-value">0</div>
@@ -125,14 +168,15 @@ const HomeScreen = () => {
         </div>
       </div>
 
-      {/* Tip Card */}
+      {/* Tip */}
       <div className="tip-container">
         <div className="tip-card">
           <IoBulb size={24} color="#FFA500" />
           <div className="tip-content">
             <div className="tip-title">Daily Practice Tip</div>
             <div className="tip-text">
-              Practice for at least 10 minutes daily to build muscle memory and retain what you learn!
+              Practice for at least 10 minutes daily to build muscle memory and
+              retain what you learn!
             </div>
           </div>
         </div>

@@ -3,57 +3,36 @@
  * Main application component with React Router
  */
 
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Navigation from './navigation/Navigation';
-import HomeScreen from './screens/HomeScreen';
-import LearnScreen from './screens/LearnScreen';
-import LessonDetailScreen from './screens/LessonDetailScreen';
-import LessonContentScreen from './screens/LessonContentScreen';
-import CameraScreen from './screens/CameraScreen';
-import ProfileScreen from './screens/ProfileScreen';
-import ProgressScreen from './screens/ProgressScreen';
-import { AuthService, isFirebaseReady } from './services/firebase';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+
+import Navigation from "./navigation/Navigation";
+import HomeScreen from "./screens/HomeScreen";
+import LearnScreen from "./screens/LearnScreen";
+import LessonDetailScreen from "./screens/LessonDetailScreen";
+import LessonContentScreen from "./screens/LessonContentScreen";
+import CameraScreen from "./screens/CameraScreen";
+import ProfileScreen from "./screens/ProfileScreen";
+import ProgressScreen from "./screens/ProgressScreen";
+import LoginScreen from "./screens/LoginScreen";
+
+import { AuthService } from "./services/firebase";
+import "./App.css";
 
 function App() {
+  const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  // 🔐 Listen to Firebase auth state
   useEffect(() => {
-    initializeApp();
+    const unsubscribe = AuthService.onAuthChange((currentUser) => {
+      setUser(currentUser);
+      setIsLoading(false);
+    });
+    return () => unsubscribe();
   }, []);
 
-  const initializeApp = async () => {
-    try {
-      console.log('🚀 Initializing SignAge Web App...');
-
-      const firebaseConfigured = isFirebaseReady();
-      if (firebaseConfigured) {
-        console.log('✅ Firebase is configured');
-      } else {
-        console.log('⚠️ Firebase not configured - Using local mock data');
-      }
-
-      const result = await AuthService.signInAnonymously();
-      
-      if (result.success) {
-        console.log('✅ User authenticated');
-        setIsAuthenticated(true);
-      } else {
-        console.log('❌ Authentication failed:', result.error);
-        setIsAuthenticated(true); // Continue anyway
-      }
-    } catch (error) {
-      console.error('❌ Error initializing app:', error);
-      setIsAuthenticated(true); // Continue anyway
-    } finally {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
-    }
-  };
-
+  // ⏳ Loading screen
   if (isLoading) {
     return (
       <div className="loading-container">
@@ -68,15 +47,40 @@ function App() {
     <Router>
       <div className="app">
         <Navigation />
+
         <div className="app-content">
           <Routes>
+            {/* Public routes */}
             <Route path="/" element={<HomeScreen />} />
-            <Route path="/learn" element={<LearnScreen />} />
-            <Route path="/learn/:lessonId" element={<LessonDetailScreen />} />
-            <Route path="/lesson/:lessonId" element={<LessonContentScreen />} />
-            <Route path="/camera" element={<CameraScreen />} />
-            <Route path="/profile" element={<ProfileScreen />} />
-            <Route path="/progress" element={<ProgressScreen />} />
+            <Route path="/login" element={!user ? <LoginScreen /> : <Navigate to="/profile" />} />
+
+            {/* Protected routes */}
+            <Route
+              path="/learn"
+              element={user ? <LearnScreen /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/learn/:lessonId"
+              element={user ? <LessonDetailScreen /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/lesson/:lessonId"
+              element={user ? <LessonContentScreen /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/camera"
+              element={user ? <CameraScreen /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/profile"
+              element={user ? <ProfileScreen /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/progress"
+              element={user ? <ProgressScreen /> : <Navigate to="/login" />}
+            />
+
+            {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
