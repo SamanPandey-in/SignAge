@@ -8,8 +8,10 @@ const LoginScreen = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isSignup, setIsSignup] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -18,7 +20,22 @@ const LoginScreen = () => {
 
     try {
       await AuthService.login(email, password);
-      navigate("/profile"); // redirect after login
+      navigate("/");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      await AuthService.signup(email, password, displayName || "User");
+      navigate("/");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -28,9 +45,18 @@ const LoginScreen = () => {
 
   return (
     <div className="login-container">
-      <h2>Login</h2>
+      <h2>{isSignup ? "Create Account" : "Login"}</h2>
 
-      <form onSubmit={handleLogin} className="login-form">
+      <form onSubmit={isSignup ? handleSignup : handleLogin} className="login-form">
+        {isSignup && (
+          <input
+            type="text"
+            placeholder="Display Name"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+          />
+        )}
+
         <input
           type="email"
           placeholder="Email"
@@ -50,9 +76,25 @@ const LoginScreen = () => {
         {error && <p className="error-text">{error}</p>}
 
         <button type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
+          {loading
+            ? (isSignup ? "Creating Account..." : "Logging in...")
+            : (isSignup ? "Sign Up" : "Login")
+          }
         </button>
       </form>
+
+      <p className="toggle-text">
+        {isSignup ? "Already have an account? " : "Don't have an account? "}
+        <button
+          className="toggle-btn"
+          onClick={() => {
+            setIsSignup(!isSignup);
+            setError("");
+          }}
+        >
+          {isSignup ? "Login" : "Sign Up"}
+        </button>
+      </p>
     </div>
   );
 };

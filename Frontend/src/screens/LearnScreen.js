@@ -5,7 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoTimeOutline, IoBarChartOutline, IoHandLeftOutline, IoCheckmarkCircle, IoChevronForward, IoBookOutline } from 'react-icons/io5';
-import { LESSONS, LESSON_CATEGORIES, getLessonsByCategory } from '../constants/lessons';
+import { LESSON_CATEGORIES, getLessonsByCategory } from '../constants/lessons';
 import { DatabaseService, AuthService } from '../services/firebase';
 import './LearnScreen.css';
 
@@ -28,9 +28,9 @@ const LearnScreen = () => {
     try {
       const user = AuthService.getCurrentUser();
       if (user) {
-        const result = await DatabaseService.getCompletedLessons(user.userId || user.uid);
+        const result = await DatabaseService.getCompletedLessons(user.uid);
         if (result.success) {
-          setCompletedLessons(result.lessons);
+          setCompletedLessons(result.lessons || []);
         }
       }
     } catch (error) {
@@ -88,24 +88,24 @@ const LearnScreen = () => {
           filteredLessons.map((lesson) => {
             const completed = isLessonCompleted(lesson.id);
             const category = LESSON_CATEGORIES[lesson.categoryId.toUpperCase()];
-            
+
             return (
               <div
                 key={lesson.id}
                 className="lesson-card"
                 onClick={() => handleLessonPress(lesson)}
               >
-                <div 
+                <div
                   className="lesson-badge"
                   style={{ backgroundColor: category?.color || '#4A90E2' }}
                 >
                   <span className="lesson-badge-text">{category?.icon || '📚'}</span>
                 </div>
-                
+
                 <div className="lesson-info">
                   <h3 className="lesson-title">{lesson.title}</h3>
                   <p className="lesson-description">{lesson.description}</p>
-                  
+
                   <div className="lesson-meta">
                     <div className="meta-item">
                       <IoTimeOutline size={16} />
@@ -121,7 +121,7 @@ const LearnScreen = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="lesson-status">
                   {completed ? (
                     <IoCheckmarkCircle size={28} color="#10B981" />

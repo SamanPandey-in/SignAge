@@ -26,8 +26,10 @@ const HomeScreen = () => {
   const [userName, setUserName] = useState("User");
   const [streak, setStreak] = useState(0);
   const [todayProgress, setTodayProgress] = useState(0);
+  const [lessonsCompleted, setLessonsCompleted] = useState(0);
+  const [totalPracticeTime, setTotalPracticeTime] = useState(0);
+  const [totalStars, setTotalStars] = useState(0);
 
-  /* 📚 Fetch lessons from backend */
   const fetchLessons = async () => {
     try {
       const user = AuthService.getCurrentUser();
@@ -48,7 +50,6 @@ const HomeScreen = () => {
     }
   };
 
-  /* 🔄 Load user data + lessons after login */
   useEffect(() => {
     const unsubscribe = AuthService.onAuthChange(async (user) => {
       if (user) {
@@ -60,14 +61,20 @@ const HomeScreen = () => {
     return () => unsubscribe();
   }, []);
 
-  /* 👤 Load user data from Firestore */
   const loadUserData = async (user) => {
     try {
       const userData = await DatabaseService.getUserData(user.uid);
-      if (userData.success) {
+      if (userData.success && userData.data) {
         setUserName(userData.data.displayName || "User");
         setStreak(userData.data.progress?.streak || 0);
         setTodayProgress(userData.data.progress?.todayProgress || 0);
+      }
+
+      const statsResult = await DatabaseService.getUserStats(user.uid);
+      if (statsResult.success && statsResult.stats) {
+        setLessonsCompleted(statsResult.stats.lessonsCompleted || 0);
+        setTotalPracticeTime(statsResult.stats.totalPracticeTime || 0);
+        setTotalStars(statsResult.stats.totalStars || 0);
       }
     } catch (error) {
       console.error("Error loading user data:", error);
@@ -76,7 +83,6 @@ const HomeScreen = () => {
 
   return (
     <div className="home-screen">
-      {/* Header */}
       <div className="home-header">
         <div>
           <div className="greeting">{getTimeBasedGreeting()},</div>
@@ -91,7 +97,6 @@ const HomeScreen = () => {
         )}
       </div>
 
-      {/* Progress Card */}
       <div className="progress-card">
         <div className="progress-header">
           <IoToday size={24} color="#4A90E2" />
@@ -115,7 +120,6 @@ const HomeScreen = () => {
         </div>
       </div>
 
-      {/* Action Cards */}
       <div className="action-cards-container">
         <div className="action-card primary-card" onClick={() => navigate("/learn")}>
           <div className="card-gradient">
@@ -144,31 +148,29 @@ const HomeScreen = () => {
         </div>
       </div>
 
-      {/* Stats */}
       <div className="stats-section">
         <h3 className="section-title">Your Stats</h3>
         <div className="stats-grid">
           <div className="stat-card">
             <IoTrophy size={32} color="#FFA500" />
-            <div className="stat-value">0</div>
+            <div className="stat-value">{lessonsCompleted}</div>
             <div className="stat-label">Lessons Completed</div>
           </div>
 
           <div className="stat-card">
             <IoTime size={32} color="#4A90E2" />
-            <div className="stat-value">0m</div>
+            <div className="stat-value">{totalPracticeTime}m</div>
             <div className="stat-label">Total Practice Time</div>
           </div>
 
           <div className="stat-card">
             <IoStar size={32} color="#50C878" />
-            <div className="stat-value">0</div>
+            <div className="stat-value">{totalStars}</div>
             <div className="stat-label">Stars Earned</div>
           </div>
         </div>
       </div>
 
-      {/* Tip */}
       <div className="tip-container">
         <div className="tip-card">
           <IoBulb size={24} color="#FFA500" />
