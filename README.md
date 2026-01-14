@@ -256,7 +256,7 @@ Vibration Motor Feedback
 ## Acknowledgements
 * [Monzer Dev](https://github.com/MonzerDev) for the open-source MediaPipe Hands-based sign language recognition model.
 * AI tools for ideation and research assistance.
-* Mentors: [Aanchal Gupta](https://github.com/AanchalGupta1162) and [Amogh More](#link) for guidance and support.
+* Mentors: [Aanchal Gupta](https://github.com/AanchalGupta1162) and [Amogh More](https://github.com/Amoghmore1409) for guidance and support.
 
 ---
 
