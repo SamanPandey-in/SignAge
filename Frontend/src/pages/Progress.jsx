@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProgress } from '@hooks/useProgress';
 import { useLessons } from '@hooks/useLessons';
+import { DatabaseService, AuthService } from '@services/firebase';
 import { ROUTES } from '@constants/routes';
 import {
   IoTrophy,
@@ -38,6 +39,13 @@ const Progress = () => {
   const [loading, setLoading] = useState(true);
   const [weeklyActivity, setWeeklyActivity] = useState([]);
   const [selectedPeriod, setSelectedPeriod] = useState('week'); // week, month, all
+  const [dbStats, setDbStats] = useState({
+    lessonsCompleted: 0,
+    streak: 0,
+    totalStars: 0,
+    totalPracticeTime: 0,
+    completedLessons: [],
+  });
 
   useEffect(() => {
     loadData();
@@ -46,8 +54,31 @@ const Progress = () => {
   const loadData = async () => {
     setLoading(true);
     await loadProgress();
+    await loadProgressFromDatabase();
     generateWeeklyActivity();
     setLoading(false);
+  };
+
+  const loadProgressFromDatabase = async () => {
+    try {
+      const user = AuthService.getCurrentUser();
+      if (user) {
+        const statsResult = await DatabaseService.getUserStats(user.uid);
+        const lessonsResult = await DatabaseService.getCompletedLessons(user.uid);
+
+        if (statsResult.success) {
+          setDbStats({
+            lessonsCompleted: statsResult.stats.lessonsCompleted || 0,
+            streak: statsResult.stats.streak || 0,
+            totalStars: statsResult.stats.totalStars || 0,
+            totalPracticeTime: statsResult.stats.totalPracticeTime || 0,
+            completedLessons: lessonsResult.success ? lessonsResult.lessons : [],
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error loading progress from database:', error);
+    }
   };
 
   const generateWeeklyActivity = () => {

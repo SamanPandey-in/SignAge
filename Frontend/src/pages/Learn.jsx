@@ -5,8 +5,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLessons } from '@hooks/useLessons';
-import { LESSONS, LESSON_CATEGORIES, getLessonsByCategory } from '@constants/lessons';
+import { LESSON_CATEGORIES, getLessonsByCategory } from '@constants/lessons';
 import { ROUTES, generatePath } from '@constants/routes';
+import { DatabaseService, AuthService } from '@services/firebase';
 import { IoCheckmarkCircle, IoChevronForward } from 'react-icons/io5';
 import LoadingSpinner from '@components/common/LoadingSpinner';
 
@@ -15,13 +16,34 @@ const Learn = () => {
   const { completedLessons, isLoading } = useLessons();
   const [selectedCategory, setSelectedCategory] = useState('basics');
   const [filteredLessons, setFilteredLessons] = useState([]);
+  const [loadedCompletedLessons, setLoadedCompletedLessons] = useState([]);
+
+  useEffect(() => {
+    loadCompletedLessons();
+  }, []);
 
   useEffect(() => {
     const lessons = getLessonsByCategory(selectedCategory);
     setFilteredLessons(lessons);
   }, [selectedCategory]);
 
-  const isLessonCompleted = (lessonId) => completedLessons.includes(lessonId);
+  const loadCompletedLessons = async () => {
+    try {
+      const user = AuthService.getCurrentUser();
+      if (user) {
+        const result = await DatabaseService.getCompletedLessons(user.uid);
+        if (result.success) {
+          setLoadedCompletedLessons(result.lessons || []);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading completed lessons:', error);
+    }
+  };
+
+  const isLessonCompleted = (lessonId) => {
+    return completedLessons.includes(lessonId) || loadedCompletedLessons.includes(lessonId);
+  };
 
   const handleLessonClick = (lesson) => {
     navigate(generatePath(ROUTES.LESSON_DETAIL, { lessonId: lesson.id }));

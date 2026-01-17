@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useLessons } from '@hooks/useLessons';
 import { useProgress } from '@hooks/useProgress';
+import { DatabaseService, AuthService } from '@services/firebase';
 import { getLessonById } from '@constants/lessons';
 import { ROUTES } from '@constants/routes';
 import {
@@ -34,6 +35,7 @@ const LessonContent = () => {
   const [showInstructions, setShowInstructions] = useState(true);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     loadLesson();
@@ -90,8 +92,47 @@ const LessonContent = () => {
       completedAt: new Date().toISOString(),
       score: 100,
     });
+
+    // Save to database
+    saveProgressToDatabase();
     
     setShowCompletionModal(true);
+  };
+
+  const saveProgressToDatabase = async () => {
+    try {
+      setIsSaving(true);
+      const user = AuthService.getCurrentUser();
+
+      if (user) {
+        const signsLearned = lesson.signs.length;
+        const score = signsLearned * 10;
+        const stars = 3;
+
+        const result = await DatabaseService.markLessonCompleted(
+          user.uid,
+          lesson.id,
+          score,
+          stars,
+          signsLearned
+        );
+
+        if (result.success) {
+          const statsResult = await DatabaseService.getUserStats(user.uid);
+          if (statsResult.success) {
+            const lessonsCompleted = statsResult.stats.lessonsCompleted || 0;
+            const todayProgress = Math.min(lessonsCompleted * 50, 100);
+            await DatabaseService.updateTodayProgress(user.uid, todayProgress);
+          }
+
+          console.log('🎉 Lesson Complete! You earned ' + stars + ' stars!');
+        }
+      }
+    } catch (error) {
+      console.error('Error saving lesson completion:', error);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleReturnToLessons = () => {
@@ -236,11 +277,20 @@ const LessonContent = () => {
 
           <Button
             onClick={handleNext}
-            disabled={currentSignIndex === lesson.signs.length - 1}
+            disabled={currentSignIndex === lesson.signs.length - 1 || isSaving}
             className="flex-1"
           >
-            Next
-            <IoArrowForward className="ml-2" />
+            {isSaving ? (
+              <>
+                <span className="mr-2">Saving...</span>
+                <IoArrowForward className="ml-2" />
+              </>
+            ) : (
+              <>
+                {currentSignIndex === lesson.signs.length - 1 ? 'Finish' : 'Next'}
+                <IoArrowForward className="ml-2" />
+              </>
+            )}
           </Button>
         </div>
       </Card>

@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@hooks/useAuth';
 import { useProgress } from '@hooks/useProgress';
-import { DatabaseService } from '@services/firebase';
+import { DatabaseService, AuthService } from '@services/firebase';
 import { getTimeBasedGreeting } from '@utils/helpers';
 import { ROUTES } from '@constants/routes';
 import {
@@ -24,34 +24,69 @@ import Button from '@components/common/Button';
 
 const Home = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { streak, todayProgress, totalLessonsCompleted, totalPracticeTime, starsEarned, loadProgress, loadStreak } = useProgress();
 
   const [userName, setUserName] = useState('User');
+  const [streak, setStreak] = useState(0);
+  const [todayProgress, setTodayProgress] = useState(0);
+  const [lessonsCompleted, setLessonsCompleted] = useState(0);
+  const [totalPracticeTime, setTotalPracticeTime] = useState(0);
+  const [totalStars, setTotalStars] = useState(0);
+
+  const fetchLessons = async () => {
+    try {
+      const currentUser = AuthService.getCurrentUser();
+      if (!currentUser) return;
+
+      const token = await currentUser.getIdToken();
+
+      const res = await fetch('http://localhost:5001/lessons', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+      console.log('📚 LESSONS FROM BACKEND:', data);
+    } catch (error) {
+      console.error('❌ Error fetching lessons:', error);
+    }
+  };
 
   useEffect(() => {
-    loadProgress();
-    loadStreak();
-    loadUserData();
+    const unsubscribe = AuthService.onAuthChange(async (currentUser) => {
+      if (currentUser) {
+        await loadUserData(currentUser);
+        await fetchLessons();
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
-  const loadUserData = async () => {
-    if (user) {
-      try {
-        const userData = await DatabaseService.getUserData(user.uid);
-        if (userData.success) {
-          setUserName(userData.data.displayName || user.email?.split('@')[0] || 'User');
-        }
-      } catch (error) {
-        console.error('Error loading user data:', error);
+  const loadUserData = async (currentUser) => {
+    try {
+      const userData = await DatabaseService.getUserData(currentUser.uid);
+      if (userData.success && userData.data) {
+        setUserName(userData.data.displayName || 'User');
+        setStreak(userData.data.progress?.streak || 0);
+        setTodayProgress(userData.data.progress?.todayProgress || 0);
       }
+
+      const statsResult = await DatabaseService.getUserStats(currentUser.uid);
+      if (statsResult.success && statsResult.stats) {
+        setLessonsCompleted(statsResult.stats.lessonsCompleted || 0);
+        setTotalPracticeTime(statsResult.stats.totalPracticeTime || 0);
+        setTotalStars(statsResult.stats.totalStars || 0);
+      }
+    } catch (error) {
+      console.error('Error loading user data:', error);
     }
   };
 
   const statCards = [
-    { icon: IoTrophy, value: totalLessonsCompleted, label: 'Lessons Completed', color: 'warning' },
+    { icon: IoTrophy, value: lessonsCompleted, label: 'Lessons Completed', color: 'warning' },
     { icon: IoTime, value: `${totalPracticeTime}m`, label: 'Practice Time', color: 'primary' },
-    { icon: IoStar, value: starsEarned, label: 'Stars Earned', color: 'success' },
+    { icon: IoStar, value: totalStars, label: 'Stars Earned', color: 'success' },
   ];
 
   return (
