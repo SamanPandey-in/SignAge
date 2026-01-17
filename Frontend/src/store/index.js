@@ -9,6 +9,7 @@ import lessonReducer from './slices/lessonSlice';
 import progressReducer from './slices/progressSlice';
 import userDataReducer from './slices/userDataSlice';
 import notificationReducer from './slices/notificationSlice';
+import apiReducer from './slices/apiSlice';
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ export const store = configureStore({
     progress: progressReducer,
     userData: userDataReducer,
     notifications: notificationReducer,
+    api: apiReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

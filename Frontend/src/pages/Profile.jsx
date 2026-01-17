@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useAuth } from '@hooks/useAuth';
 import { useUserData } from '@hooks/useUserData';
 import { useNotification } from '@hooks/useNotification';
+import apiService from '@services/apiService';
 import {
   IoPerson,
   IoPencil,
@@ -50,23 +51,25 @@ const Profile = () => {
     setLoading(true);
     
     try {
-      // Update profile data via Redux
-      await import('@services/firebase').then(({ DatabaseService }) =>
-        DatabaseService.saveUserData(user.uid, {
-          displayName,
-          bio,
-          goal,
-          notifications,
-          emailUpdates,
-          language,
-          updatedAt: new Date().toISOString(),
-        })
-      );
+      // Use Phase 2 apiService directly for profile save
+      const result = await apiService.updateProgress({
+        displayName,
+        bio,
+        goal,
+        notifications,
+        emailUpdates,
+        language,
+        updatedAt: new Date().toISOString(),
+      });
       
-      notification.success('Profile updated successfully!');
-      setIsEditing(false);
+      if (result.success) {
+        notification.success('Profile updated successfully!');
+        setIsEditing(false);
+      } else {
+        notification.error(result.error || 'Failed to save profile');
+      }
     } catch (error) {
-      console.error('Error saving profile:', error);
+      console.error('[Profile] Error saving profile:', error);
       notification.error('Failed to save profile. Please try again.');
     } finally {
       setLoading(false);

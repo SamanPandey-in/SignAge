@@ -1,6 +1,7 @@
 /**
  * useUserData Hook
  * Provides convenient access to consolidated user data from Redux
+ * Phase 2 Integrated: Async thunks now use unified apiService
  * Single source of truth for all user-related information
  */
 
@@ -46,9 +47,10 @@ export const useUserData = () => {
   const starsEarned = useSelector(selectStarsEarned);
 
   // Load user data on mount or when user changes
+  // Async thunks (fetchUserProfile, etc.) now use Phase 2 apiService internally
   useEffect(() => {
     if (isAuthenticated && user?.uid) {
-      dispatch(fetchUserProfile(user.uid));
+      dispatch(fetchUserProfile());
     }
   }, [isAuthenticated, user?.uid, dispatch]);
 

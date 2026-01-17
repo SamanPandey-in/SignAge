@@ -5,35 +5,35 @@
  */
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { DatabaseService, AuthService } from '@services/firebase';
+import apiService from '@services/apiService';
+import { auth } from '@services/firebase';
 
 /**
  * Async thunk to fetch complete user profile including stats and progress
  */
 export const fetchUserProfile = createAsyncThunk(
   'userData/fetchUserProfile',
-  async (userId, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const user = AuthService.getCurrentUser();
-      if (!user) {
+      if (!auth.currentUser) {
         throw new Error('User not authenticated');
       }
 
-      // Fetch all user data in parallel
-      const [profileResult, statsResult, lessonsResult] = await Promise.all([
-        DatabaseService.getUserData(userId),
-        DatabaseService.getUserStats(userId),
-        DatabaseService.getCompletedLessons(userId),
+      // Fetch all user data in parallel using Phase 2 apiService
+      const [progressResult, streakResult, lessonsResult] = await Promise.all([
+        apiService.getProgress(),
+        apiService.getStreak(),
+        apiService.getAllLessons(),
       ]);
 
-      if (!profileResult.success) {
+      if (!progressResult.success) {
         throw new Error('Failed to fetch user profile');
       }
 
       return {
-        profile: profileResult.data,
-        stats: statsResult.success ? statsResult.stats : {},
-        completedLessons: lessonsResult.success ? lessonsResult.lessons : [],
+        profile: { email: auth.currentUser.email, displayName: auth.currentUser.displayName || 'User' },
+        stats: { ...progressResult.data, streak: streakResult.data?.streak || 0 },
+        completedLessons: lessonsResult.data?.filter(l => l.completed) || [],
       };
     } catch (error) {
       return rejectWithValue(error.message);
@@ -48,15 +48,15 @@ export const updateUserProgress = createAsyncThunk(
   'userData/updateUserProgress',
   async (progressData, { rejectWithValue }) => {
     try {
-      const user = AuthService.getCurrentUser();
-      if (!user) {
+      if (!auth.currentUser) {
         throw new Error('User not authenticated');
       }
 
-      const result = await DatabaseService.updateUserProgress(user.uid, progressData);
+      // Use Phase 2 apiService for unified API layer
+      const result = await apiService.updateProgress(progressData);
       
       if (!result.success) {
-        throw new Error(result.message || 'Failed to update progress');
+        throw new Error(result.error || 'Failed to update progress');
       }
 
       return result.data;
@@ -71,26 +71,20 @@ export const updateUserProgress = createAsyncThunk(
  */
 export const markLessonCompleted = createAsyncThunk(
   'userData/markLessonCompleted',
-  async ({ lessonId, score, stars, signsLearned }, { rejectWithValue }) => {
+  async ({ lessonId, score }, { rejectWithValue }) => {
     try {
-      const user = AuthService.getCurrentUser();
-      if (!user) {
+      if (!auth.currentUser) {
         throw new Error('User not authenticated');
       }
 
-      const result = await DatabaseService.markLessonCompleted(
-        user.uid,
-        lessonId,
-        score,
-        stars,
-        signsLearned
-      );
+      // Use Phase 2 apiService unified endpoint
+      const result = await apiService.completeLesson(lessonId, score);
 
       if (!result.success) {
-        throw new Error(result.message || 'Failed to mark lesson as completed');
+        throw new Error(result.error || 'Failed to mark lesson as completed');
       }
 
-      return { lessonId, score, stars, signsLearned };
+      return { lessonId, score };
     } catch (error) {
       return rejectWithValue(error.message);
     }

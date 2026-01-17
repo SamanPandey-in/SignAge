@@ -1,10 +1,10 @@
 /**
  * Data Service
  * Business logic layer that aggregates and manages data access
- * Serves as a bridge between Redux and Firebase/API services
+ * Phase 2 Integration: Now uses unified apiService instead of direct Firebase calls
  */
 
-import { DatabaseService, AuthService } from '@services/firebase';
+import apiService from '@services/apiService';
 
 /**
  * Cache configuration to prevent unnecessary API calls
@@ -35,9 +35,10 @@ const clearCache = () => {
 export const DataService = {
   /**
    * Fetch complete user profile with stats and lessons
-   * Implements caching to reduce database calls
+   * Implements caching to reduce API calls
+   * Uses Phase 2 apiService for unified API layer
    */
-  async fetchUserProfile(userId) {
+  async fetchUserProfile() {
     try {
       // Check cache first
       if (isCacheValid(cache.userProfile)) {
@@ -48,21 +49,20 @@ export const DataService = {
         };
       }
 
-      // Fetch from database
-      const [profileResult, statsResult, lessonsResult] = await Promise.all([
-        DatabaseService.getUserData(userId),
-        DatabaseService.getUserStats(userId),
-        DatabaseService.getCompletedLessons(userId),
+      // Fetch from API using Phase 2 apiService
+      const [progressResult, streakResult, lessonsResult] = await Promise.all([
+        apiService.getProgress(),
+        apiService.getStreak(),
+        apiService.getAllLessons(),
       ]);
 
-      if (!profileResult.success) {
-        throw new Error('Failed to fetch user profile');
+      if (!progressResult.success) {
+        throw new Error(progressResult.error || 'Failed to fetch user profile');
       }
 
       const profileData = {
-        profile: profileResult.data,
-        stats: statsResult.success ? statsResult.stats : {},
-        completedLessons: lessonsResult.success ? lessonsResult.lessons : [],
+        stats: { ...progressResult.data, streak: streakResult.data?.streak || 0 },
+        completedLessons: lessonsResult.data?.filter(l => l.completed) || [],
       };
 
       // Cache the result
@@ -71,11 +71,11 @@ export const DataService = {
 
       return {
         success: true,
-        source: 'database',
+        source: 'api',
         data: profileData,
       };
     } catch (error) {
-      console.error('Error fetching user profile:', error);
+      console.error('[DataService] Error fetching user profile:', error);
       return {
         success: false,
         error: error.message,
@@ -85,9 +85,9 @@ export const DataService = {
 
   /**
    * Fetch user statistics
-   * Cached separately for more frequent updates
+   * Uses Phase 2 apiService for unified API layer
    */
-  async fetchUserStats(userId) {
+  async fetchUserStats() {
     try {
       // Check cache first
       if (isCacheValid(cache.userStats)) {
@@ -98,14 +98,14 @@ export const DataService = {
         };
       }
 
-      const result = await DatabaseService.getUserStats(userId);
+      const result = await apiService.getProgress();
       
       if (!result.success) {
-        throw new Error('Failed to fetch user stats');
+        throw new Error(result.error || 'Failed to fetch user stats');
       }
 
       // Cache the result
-      cache.userStats.data = result.stats;
+      cache.userStats.data = result.data;
       cache.userStats.timestamp = Date.now();
 
       return {
@@ -124,8 +124,9 @@ export const DataService = {
 
   /**
    * Fetch completed lessons
+   * Uses Phase 2 apiService
    */
-  async fetchCompletedLessons(userId) {
+  async fetchCompletedLessons() {
     try {
       // Check cache first
       if (isCacheValid(cache.completedLessons)) {
@@ -136,23 +137,25 @@ export const DataService = {
         };
       }
 
-      const result = await DatabaseService.getCompletedLessons(userId);
+      const result = await apiService.getAllLessons();
       
       if (!result.success) {
-        throw new Error('Failed to fetch completed lessons');
+        throw new Error(result.error || 'Failed to fetch completed lessons');
       }
 
+      const completedLessons = result.data?.filter(l => l.completed) || [];
+      
       // Cache the result
-      cache.completedLessons.data = result.lessons;
+      cache.completedLessons.data = completedLessons;
       cache.completedLessons.timestamp = Date.now();
 
       return {
         success: true,
-        source: 'database',
-        lessons: result.lessons,
+        source: 'api',
+        lessons: completedLessons,
       };
     } catch (error) {
-      console.error('Error fetching completed lessons:', error);
+      console.error('[DataService] Error fetching completed lessons:', error);
       return {
         success: false,
         error: error.message,
@@ -161,11 +164,12 @@ export const DataService = {
   },
 
   /**
-   * Update user progress and invalidate cache
+   * Update user progress using Phase 2 apiService
+   * Invalidates cache on success
    */
-  async updateUserProgress(userId, progressData) {
+  async updateUserProgress(progressData) {
     try {
-      const result = await DatabaseService.updateUserProgress(userId, progressData);
+      const result = await apiService.updateProgress(progressData);
       
       if (result.success) {
         // Invalidate relevant caches
@@ -175,7 +179,7 @@ export const DataService = {
 
       return result;
     } catch (error) {
-      console.error('Error updating user progress:', error);
+      console.error('[DataService] Error updating user progress:', error);
       return {
         success: false,
         error: error.message,
@@ -184,17 +188,11 @@ export const DataService = {
   },
 
   /**
-   * Mark lesson as completed and update stats
+   * Mark lesson as completed using Phase 2 apiService
    */
-  async markLessonCompleted(userId, lessonId, score, stars, signsLearned) {
+  async markLessonCompleted(lessonId, score) {
     try {
-      const result = await DatabaseService.markLessonCompleted(
-        userId,
-        lessonId,
-        score,
-        stars,
-        signsLearned
-      );
+      const result = await apiService.completeLesson(lessonId, score);
 
       if (result.success) {
         // Invalidate relevant caches
@@ -214,11 +212,11 @@ export const DataService = {
   },
 
   /**
-   * Update today's progress
+   * Update today's progress using Phase 2 apiService
    */
-  async updateTodayProgress(userId, progress) {
+  async updateTodayProgress(progress) {
     try {
-      const result = await DatabaseService.updateTodayProgress(userId, progress);
+      const result = await apiService.updateProgress({ todayProgress: progress });
 
       if (result.success) {
         // Invalidate cache
@@ -228,7 +226,7 @@ export const DataService = {
 
       return result;
     } catch (error) {
-      console.error('Error updating today progress:', error);
+      console.error('[DataService] Error updating today progress:', error);
       return {
         success: false,
         error: error.message,
@@ -237,11 +235,11 @@ export const DataService = {
   },
 
   /**
-   * Update user streak
+   * Update user streak using Phase 2 apiService
    */
-  async updateUserStreak(userId, streak) {
+  async updateUserStreak() {
     try {
-      const result = await DatabaseService.updateUserStreak(userId, streak);
+      const result = await apiService.updateStreak();
 
       if (result.success) {
         // Invalidate cache

@@ -6,6 +6,7 @@ export const API_ENDPOINTS = {
   LOGOUT: '/auth/logout',
   LESSONS: '/lessons',
   LESSON_DETAIL: '/lessons/:id',
+  LESSON_COMPLETE: '/lessons/:id/complete',
   PROGRESS: '/progress',
   UPDATE_PROGRESS: '/progress/update',
   STREAK: '/streak',
