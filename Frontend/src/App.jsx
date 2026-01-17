@@ -6,6 +6,7 @@ import { ROUTES } from '@constants/routes';
 import Navigation from '@components/layout/Navigation';
 import ProtectedRoute from '@components/layout/ProtectedRoute';
 import ErrorBoundary from '@components/common/ErrorBoundary';
+import NotificationCenter from '@components/common/NotificationCenter';
 import Landing from '@pages/Landing';
 import Login from '@pages/Login';
 import Home from '@pages/Home';
@@ -24,6 +25,7 @@ function App() {
           <Router>
             <div className="min-h-screen bg-gray-50">
               <Navigation />
+              <NotificationCenter />
               <main>
                 <Routes>
                   <Route path={ROUTES.LANDING} element={<Landing />} />
