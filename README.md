@@ -265,7 +265,7 @@ Vibration Motor Feedback
 | Member | Role |
 |--------|------|
 | [**Saman Pandey**](https://github.com/SamanPandey-in) | UI/UX Design & Documentation |
-| [**Bhoomi Singh**](https://github.com/bhoomi72) | Backend & Integration |
+| [**Bhoomi Singh**](https://github.com/bhoomisingh00079) | Backend & Integration |
 | [**Vedang Mendhurwar**](https://github.com/Vedang-M) | Database & Hardware Simulation |
 
 ---
