@@ -1,53 +1,141 @@
+/* ===============================
+   LETTER SELECTOR (TOP BAR)
+   =============================== */
+
+.letter-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px;
+  background: #111;
+  color: #fff;
+}
+
+.letter-label {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.letter-current {
+  font-size: 28px;
+  font-weight: bold;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #4A90E2;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+/* ===============================
+   LETTER PICKER GRID
+   =============================== */
+
+.letter-picker {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  padding: 16px;
+  background: #fff;
+}
+
+.letter-btn {
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid #E5E7EB;
+  background: #F9FAFB;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.letter-btn.active {
+  background: #4A90E2;
+  color: #fff;
+  border-color: #4A90E2;
+}
+
+/* ===============================
+   MOBILE ADJUSTMENT
+   =============================== */
+
+@media (max-width: 768px) {
+  .letter-picker {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+
+/* ===============================
+   CAMERA SCREEN LAYOUT
+   =============================== */
+
 .camera-screen {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 90px);
+  min-height: 100vh;
   background: #000;
 }
 
+/* ===============================
+   CAMERA AREA
+   =============================== */
+
 .camera-container {
-  flex: 1;
   position: relative;
+  width: 100%;
+  height: 65vh;                 /* CONTROL CAMERA HEIGHT */
   background: #000;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
+/* IMPORTANT: use CONTAIN, not COVER */
 .camera-video {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;          /* FIXES UGLY ZOOM */
+  background: #000;
+  transform: scaleX(-1);
 }
+
+/* ===============================
+   OVERLAY + FRAME
+   =============================== */
 
 .camera-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   pointer-events: none;
 }
 
+/* Big, meaningful hand frame */
 .guidance-frame {
-  width: 280px;
-  height: 280px;
-  border: 3px dashed #fff;
-  border-radius: 16px;
+  width: 45%;
+  aspect-ratio: 1 / 1;
+  max-width: 420px;
+  border: 3px dashed rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
 }
+
+/* ===============================
+   PREDICTION UI
+   =============================== */
 
 .prediction-container {
   position: absolute;
-  top: 48px;
+  top: 20px;
   background: rgba(0, 0, 0, 0.7);
-  padding: 24px 32px;
+  padding: 16px 24px;
   border-radius: 12px;
   text-align: center;
-  min-width: 200px;
+  min-width: 180px;
 }
 
 .prediction-label {
@@ -60,15 +148,15 @@
   font-size: 32px;
   font-weight: bold;
   color: #fff;
-  margin: 8px 0;
+  margin: 6px 0;
 }
 
 .confidence-bar {
-  width: 150px;
+  width: 140px;
   height: 6px;
   background: rgba(255, 255, 255, 0.3);
   border-radius: 999px;
-  margin: 16px auto 8px;
+  margin: 10px auto 6px;
   overflow: hidden;
 }
 
@@ -83,9 +171,13 @@
   color: #fff;
 }
 
+/* ===============================
+   CONTROLS
+   =============================== */
+
 .camera-controls {
   background: #fff;
-  padding: 24px;
+  padding: 20px;
 }
 
 .status-container {
@@ -93,7 +185,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .status-dot {
@@ -111,52 +203,40 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 32px;
-  margin-bottom: 24px;
+  gap: 28px;
+  margin-bottom: 16px;
 }
 
 .control-button {
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
   background: #F0F2F5;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s;
   border: none;
   color: #1A1A1A;
 }
 
-.control-button:hover {
-  background: #E5E7EB;
-  transform: scale(1.05);
-}
-
 .practice-button {
-  width: 72px;
-  height: 72px;
+  width: 68px;
+  height: 68px;
   background: #4A90E2;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s;
   border: none;
   color: #fff;
-  box-shadow: 0 8px 24px rgba(74, 144, 226, 0.4);
-}
-
-.practice-button:hover {
-  background: #3A7BC8;
-  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(74, 144, 226, 0.4);
 }
 
 .practice-button.active {
   background: #EF4444;
-  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
+  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.4);
 }
 
 .instructions-container {
@@ -164,6 +244,20 @@
 }
 
 .instructions-text {
-  font-size: 16px;
+  font-size: 15px;
   color: #6B7280;
+}
+
+/* ===============================
+   MOBILE FIXES
+   =============================== */
+
+@media (max-width: 768px) {
+  .camera-container {
+    height: 55vh;
+  }
+
+  .guidance-frame {
+    width: 70%;
+  }
 }
