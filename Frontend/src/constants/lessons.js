@@ -1,12 +1,3 @@
-/**
- * Lesson Data
- * Contains all lesson content for sign language learning
- * Each lesson includes title, description, signs, and difficulty level
- */
-
-/**
- * Lesson categories and their metadata
- */
 export const LESSON_CATEGORIES = {
   BASICS: {
     id: 'basics',
@@ -36,12 +27,22 @@ export const LESSON_CATEGORIES = {
     icon: '💬',
     color: '#FFA500',
   },
+  EMOTIONS: {
+    id: 'emotions',
+    title: 'Emotions',
+    description: 'Express your feelings',
+    icon: '😊',
+    color: '#9B59B6',
+  },
+  FAMILY: {
+    id: 'family',
+    title: 'Family',
+    description: 'Family member signs',
+    icon: '👨‍👩‍👧‍👦',
+    color: '#E74C3C',
+  },
 };
 
-/**
- * Individual lesson content
- * Each lesson contains multiple signs to practice
- */
 export const LESSONS = [
   {
     id: 'lesson_1',
@@ -88,6 +89,18 @@ export const LESSONS = [
           'Move hand forward and slightly down',
         ],
       },
+      {
+        id: 'please',
+        word: 'Please',
+        description: 'Circular motion over chest with open palm',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Place open palm on chest',
+          'Move hand in circular motion',
+          'Keep motion smooth and gentle',
+        ],
+      },
     ],
   },
   {
@@ -112,15 +125,39 @@ export const LESSONS = [
         ],
       },
       {
-        id: 'please',
-        word: 'Please',
-        description: 'Circular motion over chest with open palm',
+        id: 'sorry',
+        word: 'Sorry',
+        description: 'Make a fist and rub it in circular motion on chest',
         videoUrl: 'placeholder_video_url',
         imageUrl: 'placeholder_image_url',
         instructions: [
-          'Place open palm on chest',
-          'Move hand in circular motion',
-          'Keep motion smooth and gentle',
+          'Make a fist with your dominant hand',
+          'Place it on your chest',
+          'Rub in circular motion',
+        ],
+      },
+      {
+        id: 'yes',
+        word: 'Yes',
+        description: 'Nod fist up and down like nodding',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Make a fist',
+          'Hold at shoulder level',
+          'Move up and down like nodding',
+        ],
+      },
+      {
+        id: 'no',
+        word: 'No',
+        description: 'Snap index and middle finger against thumb',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Extend index and middle finger',
+          'Touch thumb',
+          'Open and close quickly',
         ],
       },
     ],
@@ -170,10 +207,153 @@ export const LESSONS = [
           'Thumb curves toward fingers',
         ],
       },
+      {
+        id: 'letter_d',
+        word: 'D',
+        description: 'Index finger up, other fingers touching thumb',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Point index finger upward',
+          'Curl middle, ring, and pinky',
+          'Touch thumb to middle finger',
+        ],
+      },
+      {
+        id: 'letter_e',
+        word: 'E',
+        description: 'All fingers curled touching thumb',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Curl all fingers',
+          'Touch fingertips to thumb',
+          'Palm faces forward',
+        ],
+      },
+      {
+        id: 'letter_f',
+        word: 'F',
+        description: 'Index and thumb touching, other fingers up',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Touch index fingertip to thumb',
+          'Extend middle, ring, and pinky upward',
+          'Keep extended fingers together',
+        ],
+      },
+      {
+        id: 'letter_g',
+        word: 'G',
+        description: 'Index and thumb extended parallel',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Extend index finger and thumb',
+          'Point them same direction',
+          'Curl other fingers',
+        ],
+      },
     ],
   },
   {
     id: 'lesson_4',
+    categoryId: 'alphabet',
+    title: 'Letters H-N',
+    description: 'Continue learning the alphabet',
+    difficulty: 'Beginner',
+    duration: '15 min',
+    completed: false,
+    signs: [
+      {
+        id: 'letter_h',
+        word: 'H',
+        description: 'Index and middle finger extended sideways',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Extend index and middle finger',
+          'Hold them horizontally',
+          'Curl other fingers with thumb',
+        ],
+      },
+      {
+        id: 'letter_i',
+        word: 'I',
+        description: 'Pinky finger extended upward',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Make a fist',
+          'Extend pinky finger upward',
+          'Keep other fingers curled',
+        ],
+      },
+      {
+        id: 'letter_j',
+        word: 'J',
+        description: 'Pinky extended, draw a J in the air',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Extend pinky finger',
+          'Draw letter J shape in air',
+          'Start at top, curve at bottom',
+        ],
+      },
+      {
+        id: 'letter_k',
+        word: 'K',
+        description: 'Index and middle up, thumb between them',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Extend index and middle finger upward',
+          'Place thumb between them',
+          'Curl ring and pinky',
+        ],
+      },
+      {
+        id: 'letter_l',
+        word: 'L',
+        description: 'Index and thumb extended making L shape',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Extend index finger upward',
+          'Extend thumb sideways',
+          'Form L shape',
+        ],
+      },
+      {
+        id: 'letter_m',
+        word: 'M',
+        description: 'Thumb under three fingers',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Curl index, middle, and ring over thumb',
+          'Extend pinky slightly',
+          'Palm faces down',
+        ],
+      },
+      {
+        id: 'letter_n',
+        word: 'N',
+        description: 'Thumb under two fingers',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Curl index and middle over thumb',
+          'Extend ring and pinky slightly',
+          'Palm faces down',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'lesson_5',
     categoryId: 'numbers',
     title: 'Numbers 1-5',
     description: 'Learn to count from one to five',
@@ -205,10 +385,117 @@ export const LESSONS = [
           'Other fingers remain closed',
         ],
       },
+      {
+        id: 'number_3',
+        word: '3',
+        description: 'Thumb, index, and middle finger extended',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Extend thumb, index, and middle finger',
+          'Keep them spread',
+          'Curl ring and pinky',
+        ],
+      },
+      {
+        id: 'number_4',
+        word: '4',
+        description: 'Four fingers extended, thumb tucked',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Extend index, middle, ring, and pinky',
+          'Tuck thumb to palm',
+          'Keep fingers together',
+        ],
+      },
+      {
+        id: 'number_5',
+        word: '5',
+        description: 'All fingers extended',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Extend all five fingers',
+          'Spread them apart',
+          'Palm faces forward',
+        ],
+      },
     ],
   },
   {
-    id: 'lesson_5',
+    id: 'lesson_6',
+    categoryId: 'numbers',
+    title: 'Numbers 6-10',
+    description: 'Continue learning numbers',
+    difficulty: 'Beginner',
+    duration: '10 min',
+    completed: false,
+    signs: [
+      {
+        id: 'number_6',
+        word: '6',
+        description: 'Thumb touches pinky, other fingers up',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Touch thumb to pinky tip',
+          'Extend other three fingers',
+          'Keep them spread',
+        ],
+      },
+      {
+        id: 'number_7',
+        word: '7',
+        description: 'Thumb touches ring finger',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Touch thumb to ring finger tip',
+          'Extend index, middle, pinky',
+          'Keep them spread',
+        ],
+      },
+      {
+        id: 'number_8',
+        word: '8',
+        description: 'Thumb touches middle finger',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Touch thumb to middle finger tip',
+          'Extend index, ring, pinky',
+          'Keep them spread',
+        ],
+      },
+      {
+        id: 'number_9',
+        word: '9',
+        description: 'Thumb touches index finger',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Touch thumb to index finger tip',
+          'Extend middle, ring, pinky',
+          'Keep them spread',
+        ],
+      },
+      {
+        id: 'number_10',
+        word: '10',
+        description: 'Thumb up, shake slightly',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Make fist with thumb up',
+          'Shake hand slightly',
+          'Or show "1" then "0"',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'lesson_7',
     categoryId: 'common_phrases',
     title: 'Daily Expressions',
     description: 'Common phrases for daily use',
@@ -240,33 +527,221 @@ export const LESSONS = [
           'Sign "YOU" by pointing',
         ],
       },
+      {
+        id: 'excuse_me',
+        word: 'Excuse me',
+        description: 'Brush fingers across opposite palm',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Hold one hand palm up',
+          'Brush other hand fingers across it',
+          'Repeat motion twice',
+        ],
+      },
+      {
+        id: 'welcome',
+        word: 'Welcome',
+        description: 'Sweep hand from side to center',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Extend hand to side',
+          'Sweep toward body center',
+          'Palm faces upward',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'lesson_8',
+    categoryId: 'emotions',
+    title: 'Basic Emotions',
+    description: 'Express how you feel',
+    difficulty: 'Beginner',
+    duration: '12 min',
+    completed: false,
+    signs: [
+      {
+        id: 'happy',
+        word: 'Happy',
+        description: 'Brush hand up chest repeatedly',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Place flat hand on chest',
+          'Brush upward in circular motion',
+          'Repeat 2-3 times with smile',
+        ],
+      },
+      {
+        id: 'sad',
+        word: 'Sad',
+        description: 'Fingers drag down face',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Place both hands near eyes',
+          'Draw fingers down face',
+          'Show sad facial expression',
+        ],
+      },
+      {
+        id: 'angry',
+        word: 'Angry',
+        description: 'Claw hand moves up face',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Make claw shape with hand',
+          'Start at chin',
+          'Move upward with tense motion',
+        ],
+      },
+      {
+        id: 'scared',
+        word: 'Scared',
+        description: 'Hands shake open from chest',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Start with closed fists at chest',
+          'Open hands suddenly',
+          'Shake slightly outward',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'lesson_9',
+    categoryId: 'family',
+    title: 'Family Members',
+    description: 'Signs for your family',
+    difficulty: 'Beginner',
+    duration: '15 min',
+    completed: false,
+    signs: [
+      {
+        id: 'mother',
+        word: 'Mother',
+        description: 'Thumb touches chin',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Extend thumb from open hand',
+          'Touch thumb to chin',
+          'Can tap lightly',
+        ],
+      },
+      {
+        id: 'father',
+        word: 'Father',
+        description: 'Thumb touches forehead',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Extend thumb from open hand',
+          'Touch thumb to forehead',
+          'Can tap lightly',
+        ],
+      },
+      {
+        id: 'brother',
+        word: 'Brother',
+        description: 'L-hand at forehead moves to index finger',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Make L-shape at forehead',
+          'Move down to extended index',
+          'Indicates male family member',
+        ],
+      },
+      {
+        id: 'sister',
+        word: 'Sister',
+        description: 'L-hand at chin moves to index finger',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Make L-shape at chin',
+          'Move down to extended index',
+          'Indicates female family member',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'lesson_10',
+    categoryId: 'basics',
+    title: 'Questions',
+    description: 'Ask basic questions',
+    difficulty: 'Intermediate',
+    duration: '18 min',
+    completed: false,
+    signs: [
+      {
+        id: 'what',
+        word: 'What',
+        description: 'Shake index finger side to side',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Extend index finger',
+          'Shake hand side to side',
+          'Raise eyebrows questioningly',
+        ],
+      },
+      {
+        id: 'where',
+        word: 'Where',
+        description: 'Point index finger and shake',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Point index finger upward',
+          'Shake back and forth',
+          'Questioning facial expression',
+        ],
+      },
+      {
+        id: 'when',
+        word: 'When',
+        description: 'Circle index finger around other index',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Point one index finger up',
+          'Circle other index around it',
+          'Then touch tips',
+        ],
+      },
+      {
+        id: 'why',
+        word: 'Why',
+        description: 'Touch forehead then wiggle hand',
+        videoUrl: 'placeholder_video_url',
+        imageUrl: 'placeholder_image_url',
+        instructions: [
+          'Touch middle finger to forehead',
+          'Move hand forward',
+          'Change to Y-shape and wiggle',
+        ],
+      },
     ],
   },
 ];
 
-/**
- * Get lessons by category
- * @param {string} categoryId - The category ID to filter by
- * @returns {Array} Array of lessons in that category
- */
 export const getLessonsByCategory = (categoryId) => {
   return LESSONS.filter(lesson => lesson.categoryId === categoryId);
 };
 
-/**
- * Get lesson by ID
- * @param {string} lessonId - The lesson ID
- * @returns {Object|null} The lesson object or null if not found
- */
 export const getLessonById = (lessonId) => {
   return LESSONS.find(lesson => lesson.id === lessonId) || null;
 };
 
-/**
- * Progress tracking constants
- */
 export const PROGRESS_CONSTANTS = {
-  MIN_ACCURACY_FOR_COMPLETION: 80, // 80% accuracy required to complete a sign
-  PRACTICE_ATTEMPTS_PER_SIGN: 3,    // Number of attempts per sign
-  STARS_FOR_COMPLETION: 3,           // Maximum stars per lesson
+  MIN_ACCURACY_FOR_COMPLETION: 80,
+  PRACTICE_ATTEMPTS_PER_SIGN: 3,
+  STARS_FOR_COMPLETION: 3,
 };
