@@ -77,15 +77,18 @@ export const useUserData = () => {
   /**
    * Update user progress
    */
-  const updateProgress = async (progressData) => {
-    try {
-      const result = await dispatch(updateUserProgress(progressData)).unwrap();
-      return { success: true, data: result };
-    } catch (err) {
-      notificationError(err);
-      return { success: false, error: err };
-    }
-  };
+  const updateProgress = async (payload) => {
+  try {
+    await api.post("/progress", payload);
+    dispatch(updateSuccess(payload));
+  } catch (err) {
+    // ✅ SILENT for camera-origin updates
+    if (payload?.source === "camera") return;
+
+    notification.error("Network error. Please check your connection.");
+  }
+};
+
 
   /**
    * Update today's progress locally (without API call)
