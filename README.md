@@ -162,26 +162,41 @@ src/
 
 ### Pretrained Open-Source Model
 
-[**Github Repository**](https://github.com/JaspreetSingh-exe/Sign-Language-Recognition-System?utm_source=chatgpt.com)
-Credits: [**Jaspreet Singh**](https://github.com/JaspreetSingh-exe)
+**GitHub Repository:**  
+https://github.com/JaspreetSingh-exe/Sign-Language-Recognition-System  
 
-* **MediaPipe Hands**
-* Classify static gestures **(A-Z)**
-* Includes custom datasets, preprocessing, training, and evaluation scripts
-* Lightweight and real-time capable
+**Credits:** Jaspreet Singh
 
-### Custom Gesture Logic
+#### Model Summary
+- Uses **MediaPipe Hands** for hand landmark detection  
+- Extracts **21 hand landmarks (x, y, z)**  
+- Trained **MLP model** for static ASL gesture recognition (**A–Z**)  
+- Lightweight and suitable for real-time applications  
 
-* Landmark comparison
-* Angle and distance analysis
-* Mapping gestures to known signs
-* Returns **Correct (C)** or **Wrong (W)**
+---
 
-### Future Scalability
+### Gesture Recognition Flow
 
-* MediaPipe Pose
-* Multi-hand gestures
-* Continuous sign recognition
+- Capture hand landmarks via MediaPipe  
+- Convert landmarks to feature vectors  
+- Classify gestures using the trained MLP model  
+- Output predicted sign (A–Z)  
+
+---
+
+### Validation Logic
+
+- Compare predicted sign with expected gesture  
+- **Correct (C)** if matched, else **Wrong (W)**  
+
+---
+
+### Future Scope
+
+- Dynamic and continuous sign recognition  
+- Multi-hand gesture support  
+- MediaPipe Pose integration  
+- Advanced deep learning models
 
 ---
 
