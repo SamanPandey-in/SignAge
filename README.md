@@ -162,11 +162,11 @@ src/
 
 ### Pretrained Open-Source Model
 
-[**Github Repository**](https://github.com/MonzerDev/Real-Time-Sign-Language-Recognition)
-Credits: [**Monzer Dev**](https://github.com/MonzerDev)
+[**Github Repository**](https://github.com/JaspreetSingh-exe/Sign-Language-Recognition-System?utm_source=chatgpt.com)
+Credits: [**Jaspreet Singh**](https://github.com/JaspreetSingh-exe)
 
 * **MediaPipe Hands**
-* Classify static gestures **(A-Z, 1-9)**
+* Classify static gestures **(A-Z)**
 * Includes custom datasets, preprocessing, training, and evaluation scripts
 * Lightweight and real-time capable
 
