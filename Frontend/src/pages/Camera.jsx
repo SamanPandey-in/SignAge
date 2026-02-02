@@ -16,11 +16,12 @@ import {
 import Button from "@components/common/Button";
 import Card from "@components/common/Card";
 import mlModelService from "@/services/mlModel";
+import { hardwareFeedback } from "@/utils/hardwareSimulation"; // ✅ ADDED
 
 const Camera = () => {
   const videoRef = useRef(null);
   const intervalRef = useRef(null);
-  const progressSavedRef = useRef(false); // 🔒 IMPORTANT LOCK
+  const progressSavedRef = useRef(false);
 
   const { updateProgress } = useUserData();
   const notification = useNotification({ silent: true });
@@ -98,22 +99,21 @@ const Camera = () => {
 
   /* ───────────── SAFE Progress Save ───────────── */
   const saveCameraProgressOnce = async () => {
-    if (progressSavedRef.current) return; // 🚫 prevent duplicates
+    if (progressSavedRef.current) return;
     progressSavedRef.current = true;
 
     try {
-      await updateProgress({ todayProgress: 1, source: "camera",});
+      await updateProgress({ todayProgress: 1, source: "camera" });
     } catch {
-      // silent by design
+      // silent
     }
   };
 
   /* ───────────── ML Practice Logic ───────────── */
   const handleStartPractice = async () => {
-    progressSavedRef.current = false; // 🔓 reset lock
+    progressSavedRef.current = false;
 
     if (!modelReady || !selectedSign) return;
-
     if (!stream) await startCamera();
 
     setIsRecording(true);
@@ -133,6 +133,8 @@ const Camera = () => {
       const target = selectedSign.word;
 
       if (label === target && confidence >= 0.8) {
+        hardwareFeedback("CORRECT"); // ✅ HARDWARE SIMULATION
+
         setFeedback({
           message: "Great job! Your sign is accurate!",
           suggestions: ["Nice hand shape", "Good positioning"],
@@ -143,12 +145,14 @@ const Camera = () => {
           ...prev.slice(0, 4),
         ]);
 
-        await saveCameraProgressOnce(); // ✅ SAFE CALL
+        await saveCameraProgressOnce();
 
         clearInterval(intervalRef.current);
         intervalRef.current = null;
         setIsRecording(false);
       } else {
+        hardwareFeedback("INCORRECT"); // ❌ HARDWARE SIMULATION
+
         setFeedback({
           message: `Detected "${label}". Try again.`,
           suggestions: ["Adjust finger positions"],
@@ -161,6 +165,22 @@ const Camera = () => {
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <h1 className="text-3xl font-bold mb-4">Practice with Camera</h1>
+
+      {/* 🔧 Hardware Feedback Simulation Indicator */}
+      <div
+        id="hardware-indicator"
+        style={{
+          display: "none",
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
+          padding: "12px 16px",
+          color: "white",
+          fontWeight: "bold",
+          borderRadius: "8px",
+          zIndex: 9999,
+        }}
+      ></div>
 
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Camera */}
