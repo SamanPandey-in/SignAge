@@ -57,7 +57,7 @@ export const LESSONS = [
         id: 'hello',
         word: 'Hello',
         description: 'Wave your hand with palm facing outward',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://i.giphy.com/3o7TKNKOfKlIhbD3gY.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Raise your hand to head level',
@@ -69,7 +69,7 @@ export const LESSONS = [
         id: 'goodbye',
         word: 'Goodbye',
         description: 'Wave your hand while closing and opening palm',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://i.giphy.com/3o7TKzb3i29i86BPJm.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Raise your hand to shoulder level',
@@ -81,7 +81,7 @@ export const LESSONS = [
         id: 'thank_you',
         word: 'Thank You',
         description: 'Move hand from chin forward',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://i.giphy.com/l0MYrlUnFtq25TQR2.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Place fingertips on chin',
@@ -93,7 +93,7 @@ export const LESSONS = [
         id: 'please',
         word: 'Please',
         description: 'Circular motion over chest with open palm',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExeTl4YzMzc2xmZDU2Mm50a2E2dDhmNWdmYW8yMTMyYjlma2Fob2p4MiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0MYEXSLkUipy1zVK/giphy.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Place open palm on chest',
@@ -116,7 +116,7 @@ export const LESSONS = [
         id: 'help',
         word: 'Help',
         description: 'Closed fist on open palm, raise together',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://i.giphy.com/l0MYQo0iDSTlnRifK.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Make a fist with one hand',
@@ -128,7 +128,7 @@ export const LESSONS = [
         id: 'sorry',
         word: 'Sorry',
         description: 'Make a fist and rub it in circular motion on chest',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://i.giphy.com/3o7TKq0oNLk8ljH7vG.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Make a fist with your dominant hand',
@@ -140,7 +140,7 @@ export const LESSONS = [
         id: 'yes',
         word: 'Yes',
         description: 'Nod fist up and down like nodding',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://i.giphy.com/l4Jz0THKhQLo61NBK.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Make a fist',
@@ -152,7 +152,7 @@ export const LESSONS = [
         id: 'no',
         word: 'No',
         description: 'Snap index and middle finger against thumb',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://i.giphy.com/l4Jz4faxuS1FiSEV2.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Extend index and middle finger',
@@ -507,7 +507,7 @@ export const LESSONS = [
         id: 'how_are_you',
         word: 'How are you?',
         description: 'Combination of multiple signs',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://i.giphy.com/3o7TKDw5NA17fKJVWU.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Sign "HOW" with hands together',
@@ -519,7 +519,7 @@ export const LESSONS = [
         id: 'nice_to_meet_you',
         word: 'Nice to meet you',
         description: 'Combination gesture expressing pleasure',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://i.giphy.com/1oHlX1mrGBF5xu1ks1.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Sign "NICE" at chest level',
@@ -531,7 +531,7 @@ export const LESSONS = [
         id: 'excuse_me',
         word: 'Excuse me',
         description: 'Brush fingers across opposite palm',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://i.giphy.com/3o7TKU1FW62vZvPGbS.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Hold one hand palm up',
@@ -543,7 +543,7 @@ export const LESSONS = [
         id: 'welcome',
         word: 'Welcome',
         description: 'Sweep hand from side to center',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://i.giphy.com/3o7TKSRNcdPmcNmTGo.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Extend hand to side',
@@ -566,7 +566,7 @@ export const LESSONS = [
         id: 'happy',
         word: 'Happy',
         description: 'Brush hand up chest repeatedly',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://i.giphy.com/3o7TKFpahYpUp4g0N2.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Place flat hand on chest',
@@ -578,7 +578,7 @@ export const LESSONS = [
         id: 'sad',
         word: 'Sad',
         description: 'Fingers drag down face',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://i.giphy.com/3o7TKVhsMTczdAzMB2.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Place both hands near eyes',
@@ -587,10 +587,10 @@ export const LESSONS = [
         ],
       },
       {
-        id: 'angry',
-        word: 'Angry',
+        id: 'frustated',
+        word: 'Frustated',
         description: 'Claw hand moves up face',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://i.giphy.com/l0MYwPRmaIKnbyr1m.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Make claw shape with hand',
@@ -599,10 +599,10 @@ export const LESSONS = [
         ],
       },
       {
-        id: 'scared',
-        word: 'Scared',
+        id: 'frightened',
+        word: 'Frightened',
         description: 'Hands shake open from chest',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://i.giphy.com/l0MYB0eBwdRIOtZeM.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Start with closed fists at chest',
@@ -625,7 +625,7 @@ export const LESSONS = [
         id: 'mother',
         word: 'Mother',
         description: 'Thumb touches chin',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://i.giphy.com/3o7TKOMlsNLawB8B9K.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Extend thumb from open hand',
@@ -637,7 +637,7 @@ export const LESSONS = [
         id: 'father',
         word: 'Father',
         description: 'Thumb touches forehead',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://i.giphy.com/l0MYQcLKwtl5v6H1S.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Extend thumb from open hand',
@@ -649,7 +649,7 @@ export const LESSONS = [
         id: 'brother',
         word: 'Brother',
         description: 'L-hand at forehead moves to index finger',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://i.giphy.com/l0MYKdiFKjnDFI65y.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Make L-shape at forehead',
@@ -661,7 +661,7 @@ export const LESSONS = [
         id: 'sister',
         word: 'Sister',
         description: 'L-hand at chin moves to index finger',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://i.giphy.com/3o7TKKYQk05pQ2ZQA0.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Make L-shape at chin',
@@ -684,7 +684,7 @@ export const LESSONS = [
         id: 'what',
         word: 'What',
         description: 'Shake index finger side to side',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://i.giphy.com/3o7TKN1heXwjTfwz6M.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Extend index finger',
@@ -696,7 +696,7 @@ export const LESSONS = [
         id: 'where',
         word: 'Where',
         description: 'Point index finger and shake',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://i.giphy.com/26hisHLOWrfUaey8o.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Point index finger upward',
@@ -708,7 +708,7 @@ export const LESSONS = [
         id: 'when',
         word: 'When',
         description: 'Circle index finger around other index',
-        videoUrl: 'placeholder_video_url',
+        videoUrl: 'https://i.giphy.com/l4JzaqiqnK8dnSryU.mp4',
         imageUrl: 'placeholder_image_url',
         instructions: [
           'Point one index finger up',

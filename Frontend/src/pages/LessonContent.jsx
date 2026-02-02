@@ -168,16 +168,27 @@ const LessonContent = () => {
         </div>
 
         {/* Video/Image Placeholder */}
-        <div className="bg-gradient-to-br from-primary-100 to-primary-200 rounded-2xl aspect-video mb-6 flex items-center justify-center">
-          <div className="text-center">
-            <IoPlay className="text-6xl text-primary-500 mx-auto mb-4" />
-            <p className="text-gray-700 font-medium">
-              Video demonstration will appear here
-            </p>
-            <p className="text-sm text-gray-600 mt-2">
-              {currentSign?.videoUrl || 'Video coming soon'}
-            </p>
-          </div>
+        <div className="bg-gray-900 rounded-2xl aspect-video mb-6 flex items-center justify-center overflow-hidden">
+          {currentSign?.videoUrl && currentSign.videoUrl !== 'placeholder_video_url' ? (
+            <video
+              src={currentSign.videoUrl}
+              controls
+              autoPlay
+              loop
+              muted
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="text-center">
+              <IoPlay className="text-6xl text-primary-500 mx-auto mb-4" />
+              <p className="text-gray-300 font-medium">
+                Video demonstration will appear here
+              </p>
+              <p className="text-sm text-gray-400 mt-2">
+                {currentSign?.videoUrl || 'Video coming soon'}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Instructions Toggle */}
