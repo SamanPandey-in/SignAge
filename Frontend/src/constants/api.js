@@ -8,7 +8,7 @@ export const API_ENDPOINTS = {
   UPDATE_PROFILE: '/auth/profile',
   LESSONS: '/lessons',
   LESSON_DETAIL: '/lessons/:id',
-  LESSON_COMPLETE: '/lessons/:id/complete',
+  LESSON_COMPLETE: '/progress/lesson',
   PROGRESS: '/progress',
   UPDATE_PROGRESS: '/progress/update',
   STREAK: '/streak',

@@ -4,8 +4,11 @@
  * Migrated to Phase 1: Uses Redux consolidation for data
  */
 
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { useUserData } from '@hooks/useUserData';
+import { fetchUserProfile } from '@store/slices/userDataSlice';
 import { getTimeBasedGreeting } from '@utils/helpers';
 import { ROUTES } from '@constants/routes';
 import {
@@ -22,6 +25,7 @@ import LoadingSpinner from '@components/common/LoadingSpinner';
 
 const Home = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { 
     profile, 
     streak, 
@@ -31,6 +35,11 @@ const Home = () => {
     starsEarned,
     isLoading 
   } = useUserData();
+
+  // Fetch fresh data when Home page mounts
+  useEffect(() => {
+    dispatch(fetchUserProfile());
+  }, [dispatch]);
 
   if (isLoading) {
     return (

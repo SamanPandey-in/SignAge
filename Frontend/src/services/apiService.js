@@ -235,9 +235,9 @@ export const apiService = {
    * @param {string} lessonId - Lesson ID
    * @param {number} score - Completion score
    */
-  async completeLesson(lessonId, score) {
-    const url = API_ENDPOINTS.LESSON_COMPLETE.replace(':id', lessonId);
-    return makeRequest('post', url, { score });
+  async completeLesson(lessonId, score, stars = 0, signsLearned = 0) {
+    const url = API_ENDPOINTS.LESSON_COMPLETE;
+    return makeRequest('post', url, { lessonId, score, stars, signsLearned });
   },
 
   // ==================== PROGRESS ====================

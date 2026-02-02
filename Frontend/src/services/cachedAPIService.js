@@ -120,8 +120,8 @@ class CachedAPIService {
   /**
    * Complete lesson (not cached - mutation)
    */
-  async completeLesson(id, score) {
-    const result = await apiService.completeLesson(id, score);
+  async completeLesson(id, score, stars = 0, signsLearned = 0) {
+    const result = await apiService.completeLesson(id, score, stars, signsLearned);
 
     // Invalidate related caches
     if (result.success) {
