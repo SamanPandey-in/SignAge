@@ -47,10 +47,13 @@ export const lessonApi = {
   /**
    * Mark lesson as completed
    */
-  completeLesson: async (lessonId, score) => {
+  completeLesson: async (lessonId, score, stars = 0, signsLearned = 0) => {
     try {
-      const response = await apiClient.post(`${API_ENDPOINTS.LESSONS}/${lessonId}/complete`, {
+      const response = await apiClient.post(API_ENDPOINTS.LESSON_COMPLETE, {
+        lessonId,
         score,
+        stars,
+        signsLearned,
         completedAt: new Date().toISOString(),
       });
       return {

@@ -6,40 +6,45 @@
  */
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import cachedAPIService from '@services/cachedAPIService';
-import { auth } from '@services/firebase';
+import { auth, DatabaseService } from '@services/firebase';
+import { logout } from './authSlice';
+
+
 
 /**
  * Async thunk to fetch complete user profile including stats and progress
- * Phase 3: Now uses cachedAPIService for automatic caching
  */
 export const fetchUserProfile = createAsyncThunk(
   'userData/fetchUserProfile',
   async (_, { rejectWithValue }) => {
     try {
       if (!auth.currentUser) {
-        throw new Error('User not authenticated');
+        return rejectWithValue('User not authenticated');
       }
 
-      // Fetch all user data in parallel using Phase 3 cachedAPIService
-      // Automatic caching, deduplication, and retry logic applied
-      const [progressResult, streakResult, lessonsResult] = await Promise.all([
-        cachedAPIService.getProgress(),
-        cachedAPIService.getStreak(),
-        cachedAPIService.getAllLessons(),
+      const uid = auth.currentUser.uid;
+
+      // Call Firebase directly
+      const [statsResult, lessonsResult] = await Promise.all([
+        DatabaseService.getUserStats(uid),
+        DatabaseService.getCompletedLessons(uid)
       ]);
 
-      if (!progressResult.success) {
-        throw new Error('Failed to fetch user profile');
+      if (!statsResult.success) {
+        return rejectWithValue(statsResult.error || 'Failed to fetch stats');
       }
 
       return {
-        profile: { email: auth.currentUser.email, displayName: auth.currentUser.displayName || 'User' },
-        stats: { ...progressResult.data, streak: streakResult.data?.streak || 0 },
-        completedLessons: lessonsResult.data?.filter(l => l.completed) || [],
+        profile: {
+          email: auth.currentUser?.email || '',
+          displayName: auth.currentUser?.displayName || 'User',
+          userId: uid
+        },
+        stats: statsResult.stats,
+        completedLessons: lessonsResult.success ? lessonsResult.lessons : [],
       };
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.message || 'Failed to fetch profile');
     }
   }
 );
@@ -56,14 +61,14 @@ export const updateUserProgress = createAsyncThunk(
         throw new Error('User not authenticated');
       }
 
-      // Use Phase 3 cachedAPIService - automatic cache invalidation on update
-      const result = await cachedAPIService.updateProgress(progressData);
-      
+      // Use DatabaseService
+      const result = await DatabaseService.updateProgress(auth.currentUser.uid, progressData);
+
       if (!result.success) {
         throw new Error(result.error || 'Failed to update progress');
       }
 
-      return result.data;
+      return progressData;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -72,24 +77,35 @@ export const updateUserProgress = createAsyncThunk(
 
 /**
  * Async thunk to mark lesson as completed
- * Phase 3: Automatic cache invalidation after mutation
+ * Phase 3: Automatic cache invalidation after mutation + progress refresh
  */
 export const markLessonCompleted = createAsyncThunk(
   'userData/markLessonCompleted',
-  async ({ lessonId, score }, { rejectWithValue }) => {
+  async ({ lessonId, score, stars = 0, signsLearned = 0 }, { rejectWithValue }) => {
     try {
       if (!auth.currentUser) {
         throw new Error('User not authenticated');
       }
 
-      // Use Phase 3 cachedAPIService - auto-invalidates all_lessons and progress caches
-      const result = await cachedAPIService.completeLesson(lessonId, score);
+      const uid = auth.currentUser.uid;
+
+      // Use DatabaseService
+      const result = await DatabaseService.markLessonCompleted(uid, lessonId, score, stars, signsLearned);
 
       if (!result.success) {
         throw new Error(result.error || 'Failed to mark lesson as completed');
       }
 
-      return { lessonId, score };
+      // Fetch updated user stats from Firebase to ensure UI is in sync
+      const statsResult = await DatabaseService.getUserStats(uid);
+
+      return {
+        lessonId,
+        score,
+        stars,
+        signsLearned,
+        progressData: statsResult.success ? statsResult.stats : null
+      };
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -199,25 +215,37 @@ const userDataSlice = createSlice({
         state.error = null;
       })
       .addCase(markLessonCompleted.fulfilled, (state, action) => {
-        const { lessonId, stars, signsLearned } = action.payload;
-        
-        if (!state.completedLessons.includes(lessonId)) {
-          state.completedLessons.push(lessonId);
+        const { lessonId, stars, signsLearned, progressData } = action.payload;
+
+        // If we fetched updated progress from backend, use that entirely
+        if (progressData) {
+          state.stats = { ...state.stats, ...progressData };
+          state.completedLessons = progressData.completedLessons || state.completedLessons;
+        } else {
+          // Fallback to local update if progress fetch failed
+          if (!state.completedLessons.includes(lessonId)) {
+            state.completedLessons.push(lessonId);
+          }
+          state.stats.lessonsCompleted += 1;
+          state.stats.totalStars += stars;
+          state.stats.signsLearned += signsLearned;
         }
-        
-        state.stats.lessonsCompleted += 1;
-        state.stats.totalStars += stars;
-        state.stats.signsLearned += signsLearned;
+
         state.lastUpdated = new Date().toISOString();
       })
       .addCase(markLessonCompleted.rejected, (state, action) => {
         state.error = action.payload;
+      })
+      .addCase(logout, (state) => {
+        return initialState;
       });
   },
+
 });
 
 // Actions
 export const { resetUserData, updateTodayProgress, addCompletedLesson, updateStreak } = userDataSlice.actions;
+
 
 // Selectors
 export const selectUserProfile = (state) => state.userData.profile;

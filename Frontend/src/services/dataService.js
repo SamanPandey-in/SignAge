@@ -30,7 +30,10 @@ const clearCache = () => {
   Object.keys(cache).forEach(key => {
     cache[key] = { data: null, timestamp: null, ttl: cache[key].ttl };
   });
+  // Also clear the API service cache
+  cachedAPIService.clearCache();
 };
+
 
 export const DataService = {
   /**
@@ -78,7 +81,7 @@ export const DataService = {
     try {
       // Phase 3: Use cachedAPIService with automatic TTL caching
       const result = await cachedAPIService.getProgress();
-      
+
       if (!result.success) {
         throw new Error(result.error || 'Failed to fetch user stats');
       }
@@ -105,13 +108,13 @@ export const DataService = {
     try {
       // Phase 3: Use cachedAPIService for automatic caching
       const result = await cachedAPIService.getAllLessons();
-      
+
       if (!result.success) {
         throw new Error(result.error || 'Failed to fetch completed lessons');
       }
 
       const completedLessons = result.data?.filter(l => l.completed) || [];
-      
+
       // Cache the result
       cache.completedLessons.data = completedLessons;
       cache.completedLessons.timestamp = Date.now();
@@ -138,7 +141,7 @@ export const DataService = {
     try {
       // Phase 3: cachedAPIService automatically invalidates 'progress' cache
       const result = await cachedAPIService.updateProgress(progressData);
-      
+
       return result;
     } catch (error) {
       console.error('[DataService] Error updating user progress:', error);
@@ -153,10 +156,10 @@ export const DataService = {
    * Mark lesson as completed
    * Phase 3: Uses cachedAPIService with automatic cache invalidation
    */
-  async markLessonCompleted(lessonId, score) {
+  async markLessonCompleted(lessonId, score, stars = 0, signsLearned = 0) {
     try {
       // Phase 3: cachedAPIService auto-invalidates 'all_lessons' and 'progress' caches
-      const result = await cachedAPIService.completeLesson(lessonId, score);
+      const result = await cachedAPIService.completeLesson(lessonId, score, stars, signsLearned);
 
       return result;
     } catch (error) {

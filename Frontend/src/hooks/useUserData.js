@@ -47,7 +47,6 @@ export const useUserData = () => {
   const starsEarned = useSelector(selectStarsEarned);
 
   // Load user data on mount or when user changes
-  // Async thunks (fetchUserProfile, etc.) now use Phase 2 apiService internally
   useEffect(() => {
     if (isAuthenticated && user?.uid) {
       dispatch(fetchUserProfile());
@@ -78,16 +77,15 @@ export const useUserData = () => {
    * Update user progress
    */
   const updateProgress = async (payload) => {
-  try {
-    await api.post("/progress", payload);
-    dispatch(updateSuccess(payload));
-  } catch (err) {
-    // ✅ SILENT for camera-origin updates
-    if (payload?.source === "camera") return;
+    try {
+      await dispatch(updateUserProgress(payload)).unwrap();
+    } catch (err) {
+      // ✅ SILENT for camera-origin updates
+      if (payload?.source === "camera") return;
 
-    notification.error("Network error. Please check your connection.");
-  }
-};
+      notificationError(err);
+    }
+  };
 
 
   /**
