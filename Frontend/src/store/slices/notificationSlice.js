@@ -18,9 +18,9 @@ const notificationSlice = createSlice({
      * Add a notification (toast)
      */
     addNotification: (state, action) => {
-      const { type = 'info', message, duration = 3000 } = action.payload;
+      const { type = 'info', message, duration = 7000 } = action.payload;
       const id = Date.now();
-      
+
       state.notifications.push({
         id,
         type, // 'success', 'error', 'warning', 'info'
@@ -45,16 +45,17 @@ const notificationSlice = createSlice({
         ? action.payload 
         : action.payload.message || 'Success!';
       
+      const duration = 7000;
       state.notifications.push({
         id,
         type: 'success',
         message,
-        duration: 3000,
+        duration,
       });
 
       setTimeout(() => {
         state.notifications = state.notifications.filter(n => n.id !== id);
-      }, 3000);
+      }, duration);
     },
 
     /**
@@ -66,16 +67,17 @@ const notificationSlice = createSlice({
         ? action.payload
         : action.payload.message || 'An error occurred';
       
+      const duration = 7000;
       state.notifications.push({
         id,
         type: 'error',
         message,
-        duration: 5000,
+        duration,
       });
 
       setTimeout(() => {
         state.notifications = state.notifications.filter(n => n.id !== id);
-      }, 5000);
+      }, duration);
     },
 
     /**
@@ -87,16 +89,17 @@ const notificationSlice = createSlice({
         ? action.payload
         : action.payload.message || 'Warning';
       
+      const duration = 7000;
       state.notifications.push({
         id,
         type: 'warning',
         message,
-        duration: 4000,
+        duration,
       });
 
       setTimeout(() => {
         state.notifications = state.notifications.filter(n => n.id !== id);
-      }, 4000);
+      }, duration);
     },
 
     /**
@@ -108,16 +111,17 @@ const notificationSlice = createSlice({
         ? action.payload
         : action.payload.message || 'Info';
       
+      const duration = 7000;
       state.notifications.push({
         id,
         type: 'info',
         message,
-        duration: 3000,
+        duration,
       });
 
       setTimeout(() => {
         state.notifications = state.notifications.filter(n => n.id !== id);
-      }, 3000);
+      }, duration);
     },
 
     /**

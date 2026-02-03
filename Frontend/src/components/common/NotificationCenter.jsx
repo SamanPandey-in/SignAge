@@ -5,6 +5,7 @@
  */
 
 import { useSelector } from 'react-redux';
+import { useEffect, useRef } from 'react';
 import { selectNotifications } from '@store/slices/notificationSlice';
 import { IoCheckmarkCircle, IoWarning, IoInformation, IoClose } from 'react-icons/io5';
 import { useNotification } from '@hooks/useNotification';
@@ -12,6 +13,36 @@ import { useNotification } from '@hooks/useNotification';
 const NotificationCenter = () => {
   const notifications = useSelector(selectNotifications);
   const { remove } = useNotification();
+
+  // Track timers for auto-dismiss so we can clean them up
+  const timersRef = useRef({});
+
+  useEffect(() => {
+    // Set timers for new notifications
+    notifications.forEach((n) => {
+      if (!timersRef.current[n.id] && n.duration > 0) {
+        timersRef.current[n.id] = setTimeout(() => {
+          remove(n.id);
+          delete timersRef.current[n.id];
+        }, n.duration);
+      }
+    });
+
+    // Clear timers for notifications that were removed
+    const activeIds = new Set(notifications.map((n) => n.id));
+    Object.keys(timersRef.current).forEach((id) => {
+      if (!activeIds.has(Number(id))) {
+        clearTimeout(timersRef.current[id]);
+        delete timersRef.current[id];
+      }
+    });
+
+    // Cleanup on unmount
+    return () => {
+      Object.values(timersRef.current).forEach(clearTimeout);
+      timersRef.current = {};
+    };
+  }, [notifications, remove]);
 
   const getIconAndColor = (type) => {
     switch (type) {
