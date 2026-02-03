@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@hooks/useAuth';
 import { ROUTES } from '@constants/routes';
 import Button from '@components/common/Button';
+import Demo from './../assets/camera-demo.png'
 import {
   IoBook,
   IoCamera,
@@ -86,10 +87,16 @@ const Landing = () => {
           <div className="lg:w-1/2 relative">
             {/* Decorative element for the AI Visualizer feel */}
             <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl border-8 border-white bg-slate-200 aspect-video flex items-center justify-center">
-              <div className="text-center p-8">
+              <img
+                src={Demo}
+                alt="Hand Gesture Mockup"
+                className="w-full h-full object-contain"
+              />
+              {/* <div className="text-center p-8">
                 <IoCamera className="text-6xl text-blue-500 mx-auto mb-4 animate-pulse" />
                 <p className="text-slate-500 font-medium">AI Camera Interface Preview</p>
-              </div>
+              </div> */}
+
               {/* Visualizing Hand Landmarks Overlay Mockup */}
               <div className="absolute inset-0 bg-blue-600/5 flex items-center justify-center">
                 <div className="w-32 h-32 border-2 border-dashed border-blue-400 rounded-full animate-ping opacity-20" />
